@@ -1,0 +1,11 @@
+.git*
+.vscode
+local.settings.json
+test
+azuredeploy.json
+CUSTOM_SCRIPT_start_train.sh
+deploy_config_singlevm.json
+deploy_vm.sh
+enqueue.py
+upload-to-blob.py
+post-to-slack.py

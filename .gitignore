@@ -1,0 +1,6 @@
+
+# Azure Functions artifacts
+bin
+obj
+appsettings.json
+azure_functions/powershell/local.settings.json
