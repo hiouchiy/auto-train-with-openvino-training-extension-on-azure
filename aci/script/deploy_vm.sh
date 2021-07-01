@@ -48,6 +48,9 @@ echo "MODEL_TYPE=$MODEL_TYPE"
 
 CUSTOM_SCRIPT_URL=${13}
 echo "CUSTOM_SCRIPT_URL=$CUSTOM_SCRIPT_URL"
+
+REFERED_JOB_ID=${14}
+echo "REFERED_JOB_ID=$REFERED_JOB_ID"
 echo "------------------------------------------------------------------------"
 
 echo "Creating RESOURCE_GROUP [$RESOURCE_GROUP]"
@@ -59,7 +62,7 @@ function deploy_vm () {
         --name $DEPLOYMENT_NAME \
         --resource-group $RESOURCE_GROUP \
         --template-file $ARM_TEMPLATE_FILE \
-        --parameters adminUsername=ai adminPasswordOrKey=Passw0rd1234 vmSize=$VM_SIZE authenticationType=password customScriptCommandToExecute="sh CUSTOM_SCRIPT_start_train.sh \"$TRAIN_DATA_URL\" \"${AZURE_STORAGE_CONNECTION_STRING}\" ${AZURE_STORAGE_ACCOUNT_NAME} ${AZURE_STORAGE_ACCOUNT_KEY} ${SLACK_URL} $JOB_ID $CLASSES $EPOCHS $DL_TYPE $MODEL_TYPE" vmName=$VM_NAME customScriptURL=$CUSTOM_SCRIPT_URL
+        --parameters adminUsername=ai adminPasswordOrKey=Passw0rd1234 vmSize=$VM_SIZE authenticationType=password customScriptCommandToExecute="sh CUSTOM_SCRIPT_start_train.sh \"$TRAIN_DATA_URL\" \"${AZURE_STORAGE_CONNECTION_STRING}\" ${AZURE_STORAGE_ACCOUNT_NAME} ${AZURE_STORAGE_ACCOUNT_KEY} ${SLACK_URL} $JOB_ID $CLASSES $EPOCHS $DL_TYPE $MODEL_TYPE $REFERED_JOB_ID" vmName=$VM_NAME customScriptURL=$CUSTOM_SCRIPT_URL
 }
 
 echo "Creating VM [$VM_NAME]"

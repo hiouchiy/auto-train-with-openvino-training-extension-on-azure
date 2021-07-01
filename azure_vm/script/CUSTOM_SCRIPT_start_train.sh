@@ -33,6 +33,9 @@ echo "DL_TYPE="$DL_TYPE
 MODEL_TYPE=${10}
 echo "MODEL_TYPE="$MODEL_TYPE
 
+REFERED_JOB_ID=${11}
+echo "REFERED_JOB_ID="$REFERED_JOB_ID
+
 ##############################################
 # Mount Azure Files for logging
 ##############################################
@@ -72,7 +75,17 @@ sudo apt install wget unzip -y
 cp /mnt/train/"$TRAIN_DATASET_URL" train.zip
 mkdir train
 unzip train.zip -d train
-cp /mnt/logs/latest.pth start.pth
+
+CONTINOUS_TRAINING=false
+if [ $REFERED_JOB_ID != "nothing" ]; then
+    if [ -d /mnt/logs/$REFERED_JOB_ID ]; then
+        if [ -e /mnt/logs/$REFERED_JOB_ID/latest.pth ]; then
+            cp /mnt/logs/$REFERED_JOB_ID/latest.pth start.pth
+            CONTINOUS_TRAINING=true
+	    fi
+    fi
+fi
+
 JOB_ID_DIR=/mnt/logs/"$JOB_ID"
 mkdir $JOB_ID_DIR
 
@@ -126,6 +139,7 @@ sudo docker run \
     -e EPOCHS=$EPOCHS \
     -e DL_TYPE=$DL_TYPE \
     -e MODEL_TYPE=$MODEL_TYPE \
+	-e CONTINOUS_TRAINING=$CONTINOUS_TRAINING \
     --shm-size=10g \
     -u 0 \
     --add-host="archive.ubuntu.com:${APT_IP}" \

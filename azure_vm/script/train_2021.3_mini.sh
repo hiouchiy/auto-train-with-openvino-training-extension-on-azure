@@ -52,7 +52,12 @@ export OBJ_DET_DIR=`pwd`
 # Copy latest mdoel file(.pth) from shared drive to workspace here 
 cd ${WORK_DIR}
 mkdir outputs
-cp /data/start.pth ${WORK_DIR}/outputs
+if "${CONTINOUS_TRAINING}"; then
+    cp /data/start.pth ${WORK_DIR}/outputs
+else
+    cp ${WORK_DIR}/snapshot.pth ${WORK_DIR}/outputs/start.pth
+fi
+
 
 # Start training
 python3 train.py \
