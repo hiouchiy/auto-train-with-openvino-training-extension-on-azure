@@ -4,7 +4,7 @@ param([string] $QueueItem, $TriggerMetadata)
 #$TRAIN_DATA_URL = $QueueItem
 #Write-Host "PowerShell queue trigger function processed work item: $TRAIN_DATA_URL"
 $TRAIN_DATA_URL,$JOB_ID,$VM_SIZE,$CLASSES,$EPOCHS,$DL_TYPE,$MODEL_TYPE,$REFERED_JOB_ID = $QueueItem.Split(":")
-Write-Host "PowerShell queue trigger function processed work item: $TRAIN_DATA_URL, $JOB_ID, $VM_SIZE, $CLASSES, $EPOCHS, $DL_TYPE, $MODEL_TYPE"
+Write-Host "PowerShell queue trigger function processed work item: $TRAIN_DATA_URL, $JOB_ID, $VM_SIZE, $CLASSES, $EPOCHS, $DL_TYPE, $MODEL_TYPE, $REFERED_JOB_ID"
 
 
 New-AzResourceGroup -Name $env:ACI_RESOURCE_GROUP_NAME -Location japaneast
