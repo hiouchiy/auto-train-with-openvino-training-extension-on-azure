@@ -4,15 +4,34 @@
 # Input Parameters
 ##############################################
 TRAIN_DATASET_URL=$1
+echo "TRAIN_DATASET_URL="$TRAIN_DATASET_URL
+
 AZURE_STORAGE_CONNECTION_STRING=$2
+echo "AZURE_STORAGE_CONNECTION_STRING="$AZURE_STORAGE_CONNECTION_STRING
+
 AZURE_STORAGE_ACCOUNT_NAME=$3
+echo "AZURE_STORAGE_ACCOUNT_NAME="$AZURE_STORAGE_ACCOUNT_NAME
+
 AZURE_STORAGE_ACCOUNT_KEY=$4
+echo "AZURE_STORAGE_ACCOUNT_KEY="$AZURE_STORAGE_ACCOUNT_KEY
+
 SLACK_URL=$5
+echo "SLACK_URL="$SLACK_URL
+
 JOB_ID=$6
+echo "JOB_ID="$JOB_ID
+
 CLASSES=$7
+echo "CLASSES="$CLASSES
+
 EPOCHS=$8
+echo "EPOCHS="$EPOCHS
+
 DL_TYPE=$9
-MODEL_TYPE=$10
+echo "DL_TYPE="$DL_TYPE
+
+MODEL_TYPE=${10}
+echo "MODEL_TYPE="$MODEL_TYPE
 
 ##############################################
 # Mount Azure Files for logging
@@ -33,7 +52,7 @@ sudo chmod 600 /etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred
 TEXT="//${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/logs /mnt/logs cifs nofail,vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino"
 #sudo echo "//${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/logs /mnt/logs cifs nofail,vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino" >> /etc/fstab
 sudo bash -c "echo ""$TEXT"" >> /etc/fstab"
-sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/logs /mnt/logs -o vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino
+sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/logs /mnt/logs -o vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino &>> /home/ai/deploy.log
 
 
 # Mount Azure Files for training data
@@ -41,7 +60,7 @@ sudo mkdir /mnt/train
 TEXT="//${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train cifs nofail,vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino"
 #sudo echo "//${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train cifs nofail,vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino" >> /etc/fstab
 sudo bash -c "echo ""$TEXT"" >> /etc/fstab"
-sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train -o vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino
+sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train -o vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino &>> /home/ai/deploy.log
 
 ##############################################
 # Download training data from Azure BLOB
