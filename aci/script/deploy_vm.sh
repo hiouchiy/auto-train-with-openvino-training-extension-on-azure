@@ -37,16 +37,16 @@ echo "JOB_ID=$JOB_ID"
 CLASSES=$9
 echo "CLASSES=$CLASSES"
 
-EPOCHS=$10
+EPOCHS=${10}
 echo "EPOCHS=$EPOCHS"
 
-DL_TYPE=$11
+DL_TYPE=${11}
 echo "DL_TYPE=$DL_TYPE"
 
-MODEL_TYPE=$12
+MODEL_TYPE=${12}
 echo "MODEL_TYPE=$MODEL_TYPE"
 
-CUSTOM_SCRIPT_URL=$13
+CUSTOM_SCRIPT_URL=${13}
 echo "CUSTOM_SCRIPT_URL=$CUSTOM_SCRIPT_URL"
 echo "------------------------------------------------------------------------"
 
