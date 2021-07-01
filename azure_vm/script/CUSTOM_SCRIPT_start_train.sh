@@ -76,12 +76,12 @@ cp /mnt/train/"$TRAIN_DATASET_URL" train.zip
 mkdir train
 unzip train.zip -d train
 
-CONTINOUS_TRAINING=false
+CONTINUOUS_TRAINING=false
 if [ $REFERED_JOB_ID != "nothing" ]; then
     if [ -d /mnt/logs/$REFERED_JOB_ID ]; then
         if [ -e /mnt/logs/$REFERED_JOB_ID/latest.pth ]; then
             cp /mnt/logs/$REFERED_JOB_ID/latest.pth start.pth
-            CONTINOUS_TRAINING=true
+            CONTINUOUS_TRAINING=true
 	    fi
     fi
 fi
@@ -139,7 +139,7 @@ sudo docker run \
     -e EPOCHS=$EPOCHS \
     -e DL_TYPE=$DL_TYPE \
     -e MODEL_TYPE=$MODEL_TYPE \
-	-e CONTINOUS_TRAINING=$CONTINOUS_TRAINING \
+	-e CONTINUOUS_TRAINING=$CONTINUOUS_TRAINING \
     --shm-size=10g \
     -u 0 \
     --add-host="archive.ubuntu.com:${APT_IP}" \
