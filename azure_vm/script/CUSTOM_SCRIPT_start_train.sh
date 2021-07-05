@@ -4,37 +4,37 @@
 # Input Parameters
 ##############################################
 TRAIN_DATASET_URL=$1
-echo "TRAIN_DATASET_URL="$TRAIN_DATASET_URL
+echo "TRAIN_DATASET_URL="$TRAIN_DATASET_URL &>> /home/ai/deploy.log
 
 AZURE_STORAGE_CONNECTION_STRING=$2
-echo "AZURE_STORAGE_CONNECTION_STRING="$AZURE_STORAGE_CONNECTION_STRING
+echo "AZURE_STORAGE_CONNECTION_STRING="$AZURE_STORAGE_CONNECTION_STRING &>> /home/ai/deploy.log
 
 AZURE_STORAGE_ACCOUNT_NAME=$3
-echo "AZURE_STORAGE_ACCOUNT_NAME="$AZURE_STORAGE_ACCOUNT_NAME
+echo "AZURE_STORAGE_ACCOUNT_NAME="$AZURE_STORAGE_ACCOUNT_NAME &>> /home/ai/deploy.log
 
 AZURE_STORAGE_ACCOUNT_KEY=$4
-echo "AZURE_STORAGE_ACCOUNT_KEY="$AZURE_STORAGE_ACCOUNT_KEY
+echo "AZURE_STORAGE_ACCOUNT_KEY="$AZURE_STORAGE_ACCOUNT_KEY &>> /home/ai/deploy.log
 
 SLACK_URL=$5
-echo "SLACK_URL="$SLACK_URL
+echo "SLACK_URL="$SLACK_URL &>> /home/ai/deploy.log
 
 JOB_ID=$6
-echo "JOB_ID="$JOB_ID
+echo "JOB_ID="$JOB_ID &>> /home/ai/deploy.log
 
 CLASSES=$7
-echo "CLASSES="$CLASSES
+echo "CLASSES="$CLASSES &>> /home/ai/deploy.log
 
 EPOCHS=$8
-echo "EPOCHS="$EPOCHS
+echo "EPOCHS="$EPOCHS &>> /home/ai/deploy.log
 
 DL_TYPE=$9
-echo "DL_TYPE="$DL_TYPE
+echo "DL_TYPE="$DL_TYPE &>> /home/ai/deploy.log
 
 MODEL_TYPE=${10}
-echo "MODEL_TYPE="$MODEL_TYPE
+echo "MODEL_TYPE="$MODEL_TYPE &>> /home/ai/deploy.log
 
 REFERED_JOB_ID=${11}
-echo "REFERED_JOB_ID="$REFERED_JOB_ID
+echo "REFERED_JOB_ID="$REFERED_JOB_ID &>> /home/ai/deploy.log
 
 ##############################################
 # Mount Azure Files for logging
@@ -68,13 +68,13 @@ sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /
 ##############################################
 # Download training data from Azure BLOB
 ##############################################
-mkdir /home/ai/data
-chmod 777 /home/ai/data
-cd /home/ai/data
-sudo apt install wget unzip -y 
-cp /mnt/train/"$TRAIN_DATASET_URL" train.zip
+mkdir /home/ai/data &>> /logs/train.log
+chmod 777 /home/ai/data &>> /logs/train.log
+cd /home/ai/data &>> /logs/train.log
+sudo apt install wget unzip -y &>> /logs/train.log
+cp /mnt/train/"$TRAIN_DATASET_URL" train.zip &>> /logs/train.log
 mkdir train
-unzip train.zip -d train
+unzip train.zip -d train &>> /logs/train.log
 
 CONTINUOUS_TRAINING=false
 if [ $REFERED_JOB_ID != "nothing" ]; then
@@ -92,13 +92,13 @@ mkdir $JOB_ID_DIR
 ##############################################
 # Install Docker
 ##############################################
-sudo apt update -y
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install -y docker-ce
+sudo apt update -y &>> /logs/train.log
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common &>> /logs/train.log
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &>> /logs/train.log
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" &>> /logs/train.log
+sudo apt update &>> /logs/train.log
+apt-cache policy docker-ce &>> /logs/train.log
+sudo apt install -y docker-ce &>> /logs/train.log
 echo "Docker Installed" &>> /logs/train.log
 
 ###########################################################
