@@ -1,8 +1,8 @@
 #!/bin/bash
 
 cd
-apt update
-apt install git -y
+apt-get update
+apt-get install git -y
 pip install datumaro
 cd /data
 datum import -i train -o train-datum -f coco

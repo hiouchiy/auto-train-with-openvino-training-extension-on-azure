@@ -65,47 +65,50 @@ TEXT="//${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train cif
 sudo bash -c "echo ""$TEXT"" >> /etc/fstab"
 sudo mount -t cifs //${AZURE_STORAGE_ACCOUNT_NAME}.file.core.windows.net/train /mnt/train -o vers=3.0,credentials=/etc/smbcredentials/${AZURE_STORAGE_ACCOUNT_NAME}.cred,dir_mode=0777,file_mode=0777,serverino &>> /home/ai/deploy.log
 
+JOB_ID_DIR=/mnt/logs/"$JOB_ID"
+mkdir $JOB_ID_DIR
+
 ##############################################
 # Download training data from Azure BLOB
 ##############################################
-mkdir /home/ai/data &>> /logs/train.log
-chmod 777 /home/ai/data &>> /logs/train.log
-cd /home/ai/data &>> /logs/train.log
-sudo apt install wget unzip -y &>> /logs/train.log
-cp /mnt/train/"$TRAIN_DATASET_URL" train.zip &>> /logs/train.log
-mkdir train
-unzip train.zip -d train &>> /logs/train.log
+mkdir /home/ai/data &>> $JOB_ID_DIR/train.log
+chmod 777 /home/ai/data &>> $JOB_ID_DIR/train.log
+cd /home/ai/data &>> $JOB_ID_DIR/train.log
+sudo apt-get update -y &>> $JOB_ID_DIR/train.log
+sudo apt-get install wget unzip -y &>> $JOB_ID_DIR/train.log
+cp /mnt/train/"$TRAIN_DATASET_URL" train.zip &>> $JOB_ID_DIR/train.log
+mkdir train &>> $JOB_ID_DIR/train.log
+unzip train.zip -d train &>> $JOB_ID_DIR/train.log
 
 CONTINUOUS_TRAINING=false
 if [ $REFERED_JOB_ID != "nothing" ]; then
     if [ -d /mnt/logs/$REFERED_JOB_ID ]; then
         if [ -e /mnt/logs/$REFERED_JOB_ID/latest.pth ]; then
-            cp /mnt/logs/$REFERED_JOB_ID/latest.pth start.pth
+		    echo "cp /mnt/logs/$REFERED_JOB_ID/latest.pth start.pth" &>> $JOB_ID_DIR/train.log
+            cp /mnt/logs/$REFERED_JOB_ID/latest.pth start.pth &>> $JOB_ID_DIR/train.log
+			echo "CONTINUOUS_TRAINING=true" &>> $JOB_ID_DIR/train.log
             CONTINUOUS_TRAINING=true
 	    fi
     fi
 fi
 
-JOB_ID_DIR=/mnt/logs/"$JOB_ID"
-mkdir $JOB_ID_DIR
-
 ##############################################
 # Install Docker
 ##############################################
-sudo apt update -y &>> /logs/train.log
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common &>> /logs/train.log
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &>> /logs/train.log
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" &>> /logs/train.log
-sudo apt update &>> /logs/train.log
-apt-cache policy docker-ce &>> /logs/train.log
-sudo apt install -y docker-ce &>> /logs/train.log
-echo "Docker Installed" &>> /logs/train.log
+sudo apt-get update -y &>> $JOB_ID_DIR/train.log
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common &>> $JOB_ID_DIR/train.log
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &>> $JOB_ID_DIR/train.log
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" &>> $JOB_ID_DIR/train.log
+sudo apt-get update &>> $JOB_ID_DIR/train.log
+apt-cache policy docker-ce &>> $JOB_ID_DIR/train.log
+sudo apt-get install -y docker-ce &>> $JOB_ID_DIR/train.log
+echo "Docker Installed" &>> $JOB_ID_DIR/train.log
 
 ###########################################################
 # Special Proc. GetIP address of ubuntu mirror in Japan
 ###########################################################
 APT_IP=`nslookup jp.archive.ubuntu.com | grep Address |  tail -n +2 | cut -f2 -d ' '`
-echo $APT_IP
+echo $APT_IP &>> $JOB_ID_DIR/train.log
 
 ##############################################
 # Data transformation
@@ -119,7 +122,7 @@ sudo docker run \
     -u 0 \
     --add-host="archive.ubuntu.com:${APT_IP}" \
     hiouchiy/ote:2021.3 \
-    /bin/bash -c 'apt update && apt install wget -y && wget ${SCRIPT_URL} -O script.sh && source script.sh &>> /logs/train.log'
+    /bin/bash -c 'apt-get update && apt-get install wget -y && wget ${SCRIPT_URL} -O script.sh && source script.sh &>> /logs/train.log'
 
 ##############################################
 # Run training
@@ -144,4 +147,4 @@ sudo docker run \
     -u 0 \
     --add-host="archive.ubuntu.com:${APT_IP}" \
     hiouchiy/ote:2021.3 \
-    /bin/bash -c 'apt update && apt install wget -y && wget ${SCRIPT_URL} -O script.sh && source script.sh &>> /logs/train.log'
+    /bin/bash -c 'apt-get update && apt-get install wget -y && wget ${SCRIPT_URL} -O script.sh && source script.sh &>> /logs/train.log'
