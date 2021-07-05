@@ -58,6 +58,8 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 
 function deploy_vm () {
     DEPLOYMENT_NAME="Deployment_$JOB_ID"
+	COMMAND="sh CUSTOM_SCRIPT_start_train.sh \"$TRAIN_DATA_URL\" \"${AZURE_STORAGE_CONNECTION_STRING}\" ${AZURE_STORAGE_ACCOUNT_NAME} ${AZURE_STORAGE_ACCOUNT_KEY} ${SLACK_URL} $JOB_ID $CLASSES $EPOCHS $DL_TYPE $MODEL_TYPE $REFERED_JOB_ID"
+	echo $COMMAND
     az deployment group create \
         --name $DEPLOYMENT_NAME \
         --resource-group $RESOURCE_GROUP \
